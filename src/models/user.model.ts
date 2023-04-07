@@ -38,8 +38,7 @@ const userSchema = new Schema({
         type: String,
         enum: [ENUM.GUEST, ENUM.ADMIN],
         default: ENUM.GUEST,
-        lowercase: true,
-        required: true
+        lowercase: true
     },
 }, { 
     timestamps: true

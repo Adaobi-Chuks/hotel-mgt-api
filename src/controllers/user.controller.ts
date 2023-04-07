@@ -2,7 +2,6 @@ import UserService from "../services/user.service";
 import bcrypt from "bcrypt";
 import constants from "../config/constants.config";
 import { Request, Response } from "express";
-import User from "../models/user.model";
 const {
     createUser, 
     generateAuthToken,
@@ -138,6 +137,9 @@ export default class UserController {
     
     async login(req: Request, res: Response) {
         const user = await findByEmailWithP(req.body.email);
+        console.log(req.body.email)
+        console.log(user)
+
         if (!user) {
             return res.status(400)
             .send({ 
@@ -145,6 +147,7 @@ export default class UserController {
                 message: INVALID_EMAIL_ERROR 
             });
         }
+        console.log("hh")
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
             return res.status(400)
@@ -158,10 +161,10 @@ export default class UserController {
             httpOnly: true, 
             maxAge: constants.MAXAGE * 1000 
         });
-        return res.header('token', token).status(200).send({
+        return res.status(200).send({
             success: true,
             message: LOGIN,
-            data: { user, token }
+            data: user 
         });
     }
 
