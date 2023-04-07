@@ -10,6 +10,7 @@ const {
     findById,
     editUserById,
     findByEmail,
+    findByEmailWithP,
     deleteUserById
 } = new UserService();
 const {
@@ -22,7 +23,8 @@ const {
     INVALID_ID_ERROR,
     INVALID_EMAIL_ERROR,
     INVALID_PASSWORD_ERROR,
-    LOGIN
+    LOGIN,
+    LOGGEDOUT
 } = constants.MESSAGES.USER;
 
 
@@ -45,16 +47,16 @@ export default class UserController {
 
         //create a user if the email doesn't exist
         const createdUser = await createUser(data);
-        const token = generateAuthToken(createdUser);
+        const token = generateAuthToken(createdUser as any);
         res.cookie("token", token, { 
             httpOnly: true, 
             maxAge: constants.MAXAGE * 1000 
         });
-        return res.header("token", token).status(201)
+        return res.status(201)
             .send({
                 message: CREATED,
                 success: true,
-                data: {createdUser, token}
+                data: createdUser
             });
     }
 
@@ -135,7 +137,7 @@ export default class UserController {
     }
     
     async login(req: Request, res: Response) {
-        const user = await findByEmail(req.body.email);
+        const user = await findByEmailWithP(req.body.email);
         if (!user) {
             return res.status(400)
             .send({ 
@@ -151,7 +153,7 @@ export default class UserController {
                 message: INVALID_PASSWORD_ERROR 
             });
         }
-        const token = generateAuthToken(user);
+        const token = generateAuthToken(user as any);
         res.cookie("token", token, { 
             httpOnly: true, 
             maxAge: constants.MAXAGE * 1000 
@@ -163,11 +165,13 @@ export default class UserController {
         });
     }
 
-    // async logout(req: Request, res: Response) {
-    //     res.cookie("token", '', {httpOnly: true, maxAge: 1 });
-    //     return res.status(200).send({
-    //         success: true,
-    //         message: LOGIN
-    //     });
-    // }
+    async logout(req: Request, res: Response) {
+        res.cookie("token", '', {
+            httpOnly: true, maxAge: 1
+        });
+        return res.status(200).send({
+            success: true,
+            message: LOGGEDOUT
+        });
+    }
 }

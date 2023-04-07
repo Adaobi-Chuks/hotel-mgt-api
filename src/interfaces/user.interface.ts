@@ -6,3 +6,8 @@ export default interface IUser {
     nationality: string;
     role: string
 }
+
+export interface IUserWithId extends IUser {
+    _id?: string;
+    id?: string;
+}

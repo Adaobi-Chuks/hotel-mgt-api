@@ -1,5 +1,5 @@
 import User from "../models/user.model";
-import IUser from "../interfaces/user.interface";
+import IUser, {IUserWithId} from "../interfaces/user.interface";
 import constants from "../config/constants.config";
 import _ from "lodash";
 import jwt from "jsonwebtoken";
@@ -9,27 +9,33 @@ export default class UserService {
     
     //finds a user by email
     async findByEmail(email: string) {
+        return await User.findOne({email}, "-__v -password");
+    }
+
+    //finds a user by email
+    async findByEmailWithP(email: string) {
         return await User.findOne({email}, "-__v");
     }
 
     //finds a user by id
     async findById(id: string) {
-        return await User.findById(id, "-__v");
+        return await User.findById(id, "-__v -password");
     }
 
     //create room
-    async createUser(user: IUser) {
-        return await User.create(user);
+    async createUser(user: Partial<IUser>) {
+        const _user = await User.create(user);
+        return await User.findOne({ _id: _user.id}, "-__v -password");
     }
 
     //get all users
     async getAllUsers() {
-        return await User.find({}, "-__v");
+        return await User.find({}, "-__v -password");
     }
 
     //edit user details with id
     async editUserById(id: string, obj: Partial<IUser>) {
-        return await User.findByIdAndUpdate(id, { $set: obj }, { new: true });
+        return await User.findByIdAndUpdate(id, { $set: obj }, { new: true }).select("-password");
     }
 
     //deleting a user details with an id
@@ -38,8 +44,9 @@ export default class UserService {
     }
 
     //creates a json web token
-    generateAuthToken (user: IUser) {
+    generateAuthToken (user: IUserWithId) {
         return jwt.sign({
+            id: user._id,
             fullName: user.fullName,
             email: user.email,
             role: user.role

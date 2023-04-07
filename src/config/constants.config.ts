@@ -1,7 +1,7 @@
 export default {
     DATABASE_URI: process.env.DATABASE_URI,
 
-    PORT: process.env.PORT,
+    PORT: process.env.PORT || 5000,
 
     SECRET: process.env.SECRET!,
 
@@ -51,7 +51,8 @@ export default {
             INVALID_ID_ERROR: "Invalid id",
             INVALID_EMAIL_ERROR: "Invalid email",
             INVALID_PASSWORD_ERROR: "Invalid password",
-            LOGIN: "Login was successfull"
+            LOGIN: "Login was successfull",
+            LOGGEDOUT: "Successfully logged out"
         },
         DATABASE: {
             CONNECTED: "MongoDB is connected",
@@ -59,7 +60,8 @@ export default {
         },
         AUTH: {
             DENIED: 'Access Denied: Unauthorized request',
-            TOKENERROR: 'Access Denied: Token not provided'
+            TOKENERROR: 'Access Denied: Token not provided',
+            INVALIDTOKEN: 'Access Denied: Invalid token'
         }
     }
 };
