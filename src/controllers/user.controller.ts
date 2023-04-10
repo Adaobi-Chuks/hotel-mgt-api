@@ -137,8 +137,6 @@ export default class UserController {
     
     async login(req: Request, res: Response) {
         const user = await findByEmailWithP(req.body.email);
-        console.log(req.body.email)
-        console.log(user)
 
         if (!user) {
             return res.status(400)
@@ -147,7 +145,7 @@ export default class UserController {
                 message: INVALID_EMAIL_ERROR 
             });
         }
-        console.log("hh")
+
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
             return res.status(400)
