@@ -35,7 +35,7 @@ const validateRoomReq:RequestHandler = function (req: Request, res: Response, ne
         });
         return res.status(403)
             .send({
-                message: error.details[0].message,
+                message: errorMessage,
                 success: false
             });
     }
@@ -55,7 +55,7 @@ const validateRoomOpt:RequestHandler = function (req: Request, res: Response, ne
         });
         return res.status(403)
             .send({
-                message: error.details[0].message,
+                message: errorMessage,
                 success: false
             });
     }
